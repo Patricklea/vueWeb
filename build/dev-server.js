@@ -81,6 +81,20 @@ devMiddleware.waitUntilValid(() => {
 
 var server = app.listen(port)
 
+// json-server的配置及使用
+var jsonServer = require('json-server')
+var apiServer = jsonServer.create()
+var apiRouter = jsonServer.router('db.json')
+var middlewares = jsonServer.defaults()
+
+apiServer.use(middlewares)
+apiServer.use('/api',apiRouter)
+// json-server设置在了8081端口
+apiServer.listen(port + 1,function () {
+  console.log('json server is running');
+})
+
+
 module.exports = {
   ready: readyPromise,
   close: () => {

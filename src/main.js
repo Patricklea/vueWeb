@@ -3,9 +3,11 @@
 import Vue from 'vue'
 import Layout from './components/layout'
 import VueRouter from 'vue-router'
+import VueResource from 'vue-resource'
 // 注意路径。虽然与文件夹是同级，但要加上./
 import IndexPage from './pages/index'
 Vue.use(VueRouter)
+Vue.use(VueResource)
 let router = new VueRouter({
 	mode: 'history',
 	routes: [

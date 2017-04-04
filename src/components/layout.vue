@@ -5,16 +5,19 @@
         <img src="../assets/logo.png" alt="">
         <div class="head-nav">
           <ul class="nav-list">
-            <li>登陆</li>
-            <li class="nav-pile"></li>
-            <li>注册</li>
-            <li class="nav-pile"></li>
-            <li>关于</li>
+            <li>{{username}}</li>
+            <li class="nav-pile" v-if="username !== ''">|</li>
+            <li @click="quit" v-if="username !== ''">退出</li>
+            <li @click="logClick" v-if="username === ''">登陆</li>
+            <li class="nav-pile" v-if="username === ''">|</li>
+            <li @click="regClick" v-if="username === ''">注册</li>
+            <li class="nav-pile">|</li>
+            <li @click="aboutClick">关于</li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="app-content">
+    <div class="container">
       <keep-alive>
         <router-view></router-view>
       </keep-alive>
@@ -22,17 +25,65 @@
     <div class="app-foot">
       <p>@ 2017 Patrick</p>
     </div>
+    <my-dialog :is-show="isShowLogDialog" @on-close="closeDialog('isShowLogDialog')">
+      <log-form @has-log="onSuccessLog"></log-form>
+    </my-dialog>
+    <my-dialog :is-show="isShowRegDialog" @on-close="closeDialog('isShowRegDialog')">
+      <reg-form></reg-form>
+    </my-dialog>
+    <my-dialog :is-show="isShowAboutDialog" @on-close="closeDialog('isShowAboutDialog')">
+      <p>本报告在调研数据的基础上，采用定性与定量相结合的方式深入分析了专车市场发展的驱动因素与阻碍因素、专车市场背后的产业格局、专车企业的竞争格局、用户对专车市场的依赖程度、专车对其他交通工具运力的补充效应等，通过这五个章节的研究反映专车市场的发展态势和面临的问题。报告力求客观、深入、准确地反映中国专车市场发展情况，为政府、企事业单位和社会各界提供决策依据。 </p>
+    </my-dialog>
   </div>
 </template>
 
 <script>
+import Dialog from './dialog'
+import LogForm from './logForm'
+import RegForm from './regFomr'
 
 export default {
   name: 'layout',
   components: {
+    MyDialog: Dialog,
+    LogForm,
+    RegForm
+  },
+  data() {
+    return {
+      isShowLogDialog: false,
+      isShowRegDialog: false,
+      isShowAboutDialog: false,
+      username: ''
+    }
+  },
+  methods: {
+    logClick() {
+      this.isShowLogDialog = true
+    },
+    regClick() {
+      this.isShowRegDialog = true
+    },
+    aboutClick() {
+      this.isShowAboutDialog = true
+    },
+    // 根据传进来的attr判断是那个对话框，然后将其关闭
+    closeDialog(attr) {
+      this[attr]= false
+    },
+    onSuccessLog(data) {
+      // 成功取到的数据赋值给当前username变量，然后渲染到页面
+      // console.log(this.username);
+      this.closeDialog('isShowLogDialog');
+      this.username = data.username
+    },
+    quit() {
+      this.username = '';
+    }
   }
 }
 </script>
+
 
 <style>
 /*#app {

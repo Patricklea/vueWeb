@@ -20,11 +20,13 @@
   				<h2>最新消息</h2>
   				<ul>
   					<li v-for="item in newsList">
-  						<a :href="item.url">{{item.title}}</a>
+  						<a :href="item.url" class="new-item">{{item.title}}</a>
   					</li>
   				</ul>
   			</div>
   		</div>
+  		<!-- 第三步，渲染组件（3步的名字都要是一样的） -->
+  		<slide-show :slides="slides" :inv="slideSpeed"></slide-show>
   		<div class="index-right">
   			<div class="index-board-list">
   				<!-- v-for的第二个参数声明了对应list的index值；注意这里class绑定的用法（数组、对象及字符串拼接） -->
@@ -44,11 +46,18 @@
 </template>
 
 <script>
+// 第一步，引入组件
+import slideShow from '../components/slideShow'
 
 export default {
+	// 第二步，注册组件
+	components: {
+		slideShow
+	},
   created() {
   	this.$http.get('/api/getNewsList')
   	.then((res) => {
+  		console.log(res);
   		this.newsList = res.data
   	},(err) => {
   		console.log(err);
@@ -56,6 +65,30 @@ export default {
   },
   data () {
     return {
+    	slideSpeed: 3000,
+    	slides: [
+	        {
+	        	// 这里要通过require引入图片的地址，否则webpack不知道src是变量还是字符串。(当图片地址通过 js引入的时候，需要用到require)
+	          src: require('../assets/slideShow/pic1.jpg'),
+	          title: 'xxx1',
+	          href: 'detail/analysis'
+	        },
+	        {
+	          src: require('../assets/slideShow/pic2.jpg'),
+	          title: 'xxx2',
+	          href: 'detail/count'
+	        },
+	        {
+	          src: require('../assets/slideShow/pic3.jpg'),
+	          title: 'xxx3',
+	          href: 'http://xxx.xxx.com'
+	        },
+	        {
+	          src: require('../assets/slideShow/pic4.jpg'),
+	          title: 'xxx4',
+	          href: 'detail/forecast'
+	        }
+    	],
     	productList: {
     		pc: {
     			title: 'PC产品',
@@ -226,6 +259,7 @@ export default {
   display: inline-block;
   width: 230px;
   overflow: hidden;
+  /* 超出文字的处理 */
   text-overflow: ellipsis;
   white-space: nowrap;
 }
